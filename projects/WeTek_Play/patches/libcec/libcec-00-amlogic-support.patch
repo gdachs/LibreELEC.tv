@@ -2,7 +2,7 @@ diff --git a/README.md b/README.md
 index dfaf4d6..0dffdcf 100644
 --- a/README.md
 +++ b/README.md
-@@ -58,6 +58,12 @@ To compile in support for Exynos devices, you have to pass the argument -DHAVE_E
+@@ -93,6 +93,12 @@ To compile in support for Exynos devices, you have to pass the argument -DHAVE_E
  cmake -DHAVE_EXYNOS_API=1 ..
  ```
  
@@ -12,11 +12,11 @@ index dfaf4d6..0dffdcf 100644
 +cmake -DHAVE_AMLOGIC_API=1 ..
 +```
 +
- ## TDA995x ##
+ ### TDA995x
  To compile in support for TDA995x devices, you have to pass the argument -DHAVE_TDA995X_API=1 to cmake:
  ```
 diff --git a/include/cectypes.h b/include/cectypes.h
-index e28c8df..c0b9476 100644
+index 0fdd48e..b7e1932 100644
 --- a/include/cectypes.h
 +++ b/include/cectypes.h
 @@ -309,6 +309,16 @@ namespace CEC {
@@ -36,7 +36,7 @@ index e28c8df..c0b9476 100644
   * Mimimum client version
   */
  #define CEC_MIN_LIB_VERSION          3
-@@ -876,7 +886,8 @@ typedef enum cec_adapter_type
+@@ -877,7 +887,8 @@ typedef enum cec_adapter_type
    ADAPTERTYPE_P8_DAUGHTERBOARD = 0x2,
    ADAPTERTYPE_RPI              = 0x100,
    ADAPTERTYPE_TDA995x          = 0x200,
@@ -50,7 +50,7 @@ diff --git a/src/libcec/CMakeLists.txt b/src/libcec/CMakeLists.txt
 index a494533..e94b094 100644
 --- a/src/libcec/CMakeLists.txt
 +++ b/src/libcec/CMakeLists.txt
-@@ -83,6 +83,9 @@ set(CEC_HEADERS devices/CECRecordingDevice.h
+@@ -87,6 +87,9 @@ set(CEC_HEADERS devices/CECRecordingDevice.h
                  adapter/Exynos/ExynosCEC.h
                  adapter/Exynos/ExynosCECAdapterDetection.h
                  adapter/Exynos/ExynosCECAdapterCommunication.h
@@ -61,7 +61,7 @@ index a494533..e94b094 100644
                  adapter/Pulse-Eight/USBCECAdapterCommunication.h
                  adapter/Pulse-Eight/USBCECAdapterCommands.h
 diff --git a/src/libcec/adapter/AdapterFactory.cpp b/src/libcec/adapter/AdapterFactory.cpp
-index 92e378b..55703b9 100644
+index da05725..824c5ff 100644
 --- a/src/libcec/adapter/AdapterFactory.cpp
 +++ b/src/libcec/adapter/AdapterFactory.cpp
 @@ -58,6 +58,11 @@
@@ -209,10 +209,10 @@ index 0000000..5aeddda
 +
 +#include "CECTypeUtils.h"
 +#include "LibCEC.h"
-+#include <platform/util/buffer.h>
++#include <p8-platform/util/buffer.h>
 +
 +using namespace CEC;
-+using namespace PLATFORM;
++using namespace P8PLATFORM;
 +
 +#define LIB_CEC m_callback->GetLib()
 +
@@ -515,14 +515,14 @@ index 0000000..0e99cf8
 +
 +#if defined(HAVE_AMLOGIC_API)
 +
-+#include <platform/threads/mutex.h>
-+#include <platform/threads/threads.h>
++#include <p8-platform/threads/mutex.h>
++#include <p8-platform/threads/threads.h>
 +#include "../AdapterCommunication.h"
 +#include <map>
 +
 +namespace CEC
 +{
-+  class CAmlogicCECAdapterCommunication : public IAdapterCommunication, public PLATFORM::CThread
++  class CAmlogicCECAdapterCommunication : public IAdapterCommunication, public P8PLATFORM::CThread
 +  {
 +  public:
 +    /*!
@@ -562,7 +562,7 @@ index 0000000..0e99cf8
 +    void SetActiveSource(bool UNUSED(bSetTo), bool UNUSED(bClientUnregistered)) {}
 +    ///}
 +
-+    /** @name PLATFORM::CThread implementation */
++    /** @name P8PLATFORM::CThread implementation */
 +    ///{
 +    void *Process(void);
 +    ///}
@@ -575,7 +575,7 @@ index 0000000..0e99cf8
 +
 +    bool                        m_bLogicalAddressChanged;
 +    cec_logical_addresses       m_logicalAddresses;
-+    PLATFORM::CMutex	        m_mutex;
++    P8PLATFORM::CMutex	        m_mutex;
 +    int                         m_fd;
 +  };
 +};
@@ -689,18 +689,18 @@ index 0000000..8a7418d
 +  };
 +}
 diff --git a/src/libcec/cmake/CheckPlatformSupport.cmake b/src/libcec/cmake/CheckPlatformSupport.cmake
-index dc5bc25..64003d9 100644
+index b8a16c8..311cb52 100644
 --- a/src/libcec/cmake/CheckPlatformSupport.cmake
 +++ b/src/libcec/cmake/CheckPlatformSupport.cmake
-@@ -10,6 +10,7 @@
- #	HAVE_RPI_API              1 if Raspberry Pi is supported
- #	HAVE_TDA995X_API          1 if TDA995X is supported
- #	HAVE_EXYNOS_API           1 if Exynos is supported
-+#	HAVE_AMLOGIC_API          1 if Amlogic is supported
+@@ -9,6 +9,7 @@
+ #       HAVE_RPI_API              1 if Raspberry Pi is supported
+ #       HAVE_TDA995X_API          1 if TDA995X is supported
+ #       HAVE_EXYNOS_API           1 if Exynos is supported
++#       HAVE_AMLOGIC_API          1 if Amlogic is supported
+ #       HAVE_P8_USB               1 if Pulse-Eight devices are supported
  #       HAVE_P8_USB_DETECT        1 if Pulse-Eight devices can be auto-detected
- #
- 
-@@ -119,6 +120,18 @@ else()
+ #       HAVE_DRM_EDID_PARSER      1 if DRM EDID parsing is supported
+@@ -132,6 +133,18 @@ else()
    else()
      set(HAVE_EXYNOS_API 0)
    endif()
@@ -720,11 +720,11 @@ index dc5bc25..64003d9 100644
  
  # rt
 diff --git a/src/libcec/cmake/DisplayPlatformSupport.cmake b/src/libcec/cmake/DisplayPlatformSupport.cmake
-index 4e24def..1890cac 100644
+index 9dcaacf..464252e 100644
 --- a/src/libcec/cmake/DisplayPlatformSupport.cmake
 +++ b/src/libcec/cmake/DisplayPlatformSupport.cmake
 @@ -44,6 +44,12 @@ else()
-   message(STATUS "Exynos support:                         no")
+   message(STATUS "DRM support:                            no")
  endif()
  
 +if (HAVE_AMLOGIC_API)
@@ -737,10 +737,10 @@ index 4e24def..1890cac 100644
    message(STATUS "Python support:                         version ${PYTHONLIBS_VERSION_STRING} (${PYTHON_VERSION})")
  else()
 diff --git a/src/libcec/env.h.in b/src/libcec/env.h.in
-index 384f1c7..c3f00bc 100644
+index 0496aa0..971f769 100644
 --- a/src/libcec/env.h.in
 +++ b/src/libcec/env.h.in
-@@ -66,6 +66,9 @@
+@@ -72,6 +72,9 @@
  /* Define to 1 for Exynos support */
  #cmakedefine HAVE_EXYNOS_API @HAVE_EXYNOS_API@
  
