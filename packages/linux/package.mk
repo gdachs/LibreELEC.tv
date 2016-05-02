@@ -34,9 +34,13 @@ case "$LINUX" in
     PKG_VERSION="b8b59bb"
     PKG_URL="https://github.com/hardkernel/linux/archive/$PKG_VERSION.tar.gz"
     ;;
-  amlogic*)
+  amlogic-3.10)
     PKG_VERSION="$LINUX-c8d5b2f"
     PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
+    ;;
+  amlogic-3.14)
+    PKG_VERSION="$LINUX-7e4fbd3"
+    PKG_URL="https://dl.dropboxusercontent.com/u/18902170/$PKG_NAME-$PKG_VERSION.tar.xz"
     ;;
   imx6)
     PKG_VERSION="3.14-mx6-sr"
