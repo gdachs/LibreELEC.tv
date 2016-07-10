@@ -1,0 +1,29 @@
+From 20439ddbbfbf0d96fdd5b15a66f193c44b2ddba3 Mon Sep 17 00:00:00 2001
+From: Alex Deryskyba <alex@codesnake.com>
+Date: Sun, 19 Jun 2016 07:19:06 +0200
+Subject: [PATCH 2/4] [aml] Fill audio packets completely when resampling to
+ prevent 'audio data unaligned' kernel warnings
+
+---
+ xbmc/cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.cpp |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/xbmc/cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.cpp b/xbmc/cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.cpp
+index bc49ce2..db7d005 100644
+--- a/xbmc/cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.cpp
++++ b/xbmc/cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.cpp
+@@ -159,7 +159,11 @@ CActiveAEBufferPoolResample::CActiveAEBufferPoolResample(AEAudioFormat inputForm
+     m_inputFormat.m_channelLayout += AE_CH_FC;
+   }
+   m_resampler = NULL;
++#ifdef HAS_LIBAMCODEC
++  m_fillPackets = true;
++#else
+   m_fillPackets = false;
++#endif
+   m_drain = false;
+   m_empty = true;
+   m_procSample = NULL;
+-- 
+1.7.10.4
+
