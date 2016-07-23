@@ -39,8 +39,8 @@ case "$LINUX" in
     PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
     ;;
   amlogic-3.14)
-    PKG_VERSION="$LINUX-7e4fbd3"
-    PKG_URL="https://dl.dropboxusercontent.com/u/18902170/$PKG_NAME-$PKG_VERSION.tar.xz"
+    PKG_VERSION="acd8fa7"
+    PKG_URL="https://github.com/Kwiboo/linux/archive/$PKG_VERSION.tar.gz"
     ;;
   imx6)
     PKG_VERSION="3.14-mx6-sr"
