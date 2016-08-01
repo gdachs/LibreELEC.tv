@@ -1,0 +1,25 @@
+#!/bin/sh
+
+################################################################################
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+################################################################################
+
+. config/options $1
+
+mkdir -p $RELEASE_DIR/3rdparty/bootloader
+  cp -PR $BUILD/linux-*/arch/$TARGET_KERNEL_ARCH/boot/dts/*.dtb $RELEASE_DIR/3rdparty/bootloader 2>/dev/null || :
+  cp -PR $BUILD/$BOOTLOADER-*/sd_fuse/bl1.bin.hardkernel $RELEASE_DIR/3rdparty/bootloader/bl1
+  cp -PR $BUILD/$BOOTLOADER-*/sd_fuse/u-boot.bin $RELEASE_DIR/3rdparty/bootloader/u-boot
+  cp -PR $PROJECT_DIR/$PROJECT/bootloader/boot.ini $RELEASE_DIR/3rdparty/bootloader
+  cp -PR $PROJECT_DIR/$PROJECT/bootloader/boot-logo.bmp.gz $RELEASE_DIR/3rdparty/bootloader
