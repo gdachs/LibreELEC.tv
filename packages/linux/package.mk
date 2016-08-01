@@ -39,7 +39,7 @@ case "$LINUX" in
     PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
     ;;
   amlogic-3.14)
-    PKG_VERSION="df4b9a2"
+    PKG_VERSION="$LINUX-1ef7bb0"
     PKG_URL="https://github.com/Kwiboo/linux/archive/$PKG_VERSION.tar.gz"
     ;;
   imx6)
