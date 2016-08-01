@@ -17,7 +17,7 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-hdmimode=720p
+hdmimode=1080p60hz
 
 # Parse command line arguments
 for arg in $(cat /proc/cmdline); do
@@ -34,19 +34,17 @@ for arg in $(cat /proc/cmdline); do
     scaling_max_freq=*)
       scaling_max_freq="${arg#*=}"
       ;;
+    debugging)
+      free_scale_switch=yes
+      ;;
+    progress)
+      free_scale_switch=yes
+      ;;
+    nosplash)
+      free_scale_switch=yes
+      ;;
   esac
 done
-
-echo "$hdmimode" > /sys/class/display/mode
-
-# Enable first framebuffer
-echo 0 > /sys/class/graphics/fb0/blank
-
-# Disable second framebuffer
-echo 1 > /sys/class/graphics/fb1/blank
-
-# Disable framebuffer scaling
-echo 0 > /sys/class/graphics/fb0/free_scale
 
 # Set framebuffer geometry to match the resolution
 case "$hdmimode" in
@@ -58,9 +56,22 @@ case "$hdmimode" in
     ;;
 esac
 
+# Set scale and switch to fb0 early
+if [ -n "$free_scale_switch" ]; then
+  echo 0 > /sys/class/graphics/fb0/free_scale_switch
+fi
+
+# Set initial video state
+echo 1 > /sys/class/video/disable_video
+
 # Include deinterlacer into default VFM map
 echo rm default > /sys/class/vfm/map
 echo add default decoder ppmgr deinterlace amvideo > /sys/class/vfm/map
+
+# Tweak HEVC playback
+echo 8 > /sys/module/amvdec_h265/parameters/buffer_mode
+echo 16 > /sys/module/amvdec_h265/parameters/dynamic_buf_num_margin
+echo 1 > /sys/module/amvdec_h265/parameters/use_cma
 
 # Boot with performance governor, then switch to the governor specified in the kernel command line
 # Assume SMP uses shared cpufreq policy for all CPUs
